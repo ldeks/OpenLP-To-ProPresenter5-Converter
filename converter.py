@@ -177,9 +177,9 @@ def VerseBlock(block_name, block_type, text_sections, color='0 0 0 0'):
         return newlist
 
     all_sections = map(unicode.strip,
-                       list_split_substrings_by_lines(MAX_LINES,  
-                           list_split_substrings('\n\n', 
-                               list_split_substrings ('[---]', 
+                       list_split_substrings_by_lines(MAX_LINES,
+                           list_split_substrings('\n\n',
+                               list_split_substrings ('[---]',
                                    text_sections))))
 
     return ('<RVSlideGrouping name="' + block_name + '" uuid="' + make_uuid()
@@ -224,7 +224,7 @@ def ParseLyric(text):
 
     def _chardata(data):
         current_verses[-1]['text'].append(data)
-        
+
     parser = xml.parsers.expat.ParserCreate()
     parser.StartElementHandler = _element
     parser.CharacterDataHandler = _chardata
@@ -260,7 +260,7 @@ def main():
         con = None
 
         # Fetch all the data first. Gets it in memory to use, rather than
-        # loads of SQLlite queries. This seems to be faster, with a little 
+        # loads of SQLlite queries. This seems to be faster, with a little
         # profiling.  If re-writing it as loads of sqlite queries
         # works better for you, I'm cool with that too.
 
@@ -274,7 +274,7 @@ def main():
         cur = con.cursor()
         cur.execute('SELECT id, title, ccli_number, copyright, comments, lyrics FROM songs')
         songs = cur.fetchall()
-        
+
         cur.execute('SELECT id, display_name FROM authors')
         authors = dict()
         for author in cur.fetchall():
@@ -286,11 +286,11 @@ def main():
         print ('  Cool.  ' + str(len(songs)) + ' songs loaded.\n' );
 
         # Database helper functions:
-        
+
         def get_song_authornames(song_id):
             return ' &amp; '.join(
-                [authors[id] for id in 
-                    [row['author_id'] for row in authors_songs 
+                [authors[id] for id in
+                    [row['author_id'] for row in authors_songs
                         if row['song_id'] == song_id]])
 
     except:
