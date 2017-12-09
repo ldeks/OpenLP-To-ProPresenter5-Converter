@@ -273,7 +273,7 @@ def main():
         con.row_factory = sql.Row
 
         cur = con.cursor()
-        cur.execute('SELECT id, title, ccli_number, song_number, copyright, comments, lyrics FROM songs')
+        cur.execute('SELECT id, title, ccli_number, copyright, comments, lyrics FROM songs')
         songs = cur.fetchall()
         
         cur.execute('SELECT id, display_name FROM authors')
