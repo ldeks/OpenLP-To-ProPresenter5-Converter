@@ -168,7 +168,6 @@ def VerseBlock(block_name, block_type, text_sections, color='0 0 0 0'):
             if new_item != '':
                 new_list.append(new_item)
 
-        new_list.reverse()  # Not sure why reverse is needed...
         return new_list
 
     def list_split_substrings(split_by, oldlist):
