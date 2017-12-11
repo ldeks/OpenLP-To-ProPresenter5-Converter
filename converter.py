@@ -21,13 +21,15 @@
 
 # Configuration Options:
 
-OPENLP_DATABASE = "~/source/OpenLP-To-ProPresenter5-Converter/songs.sqlite"
+OPENLP_DATABASE = "~/source/OpenLP-To-ProPresenter5-Converter/songs2.sqlite"
 OUTPUT_DIRECTORY = "tmp/"
 
 
 import OpenLP
 import Pro5
+import LifeVerse
 import re                        # For regexy stuff.
+import codecs
 
 # Apparently it's faster / better to compile regex:
 __re_year = re.compile(r'^\d\d\d\d')   # Year from Copyright String
@@ -58,13 +60,47 @@ def main():
             copyright_year = ''
             copyright = ''
 
-        pro5 = Pro5.Pro5Writer()
-        for v in lp.ParseLyric(song['lyrics']):
-            pro5.addVerse(v)
+        # pro5 = Pro5.Pro5Writer()
+        # for v in lp.ParseLyric(song['lyrics']):
+        #     pro5.addVerse(v)
 
-        if (not pro5.writeFile(OUTPUT_DIRECTORY, song['title'], song['ccli_number'], song['comments'],
-                            copyright_year, copyright, song_authors)):
-            exit()
+        # if (not pro5.writeFile(OUTPUT_DIRECTORY, song['title'], song['ccli_number'], song['comments'],
+        #                     copyright_year, copyright, song_authors)):
+        #     exit()
+        orderToTagName = dict()
+
+        orderToTagName["v"] = "verse"
+        orderToTagName["c"] = "chorus"
+        orderToTagName["p"] = "pre-chorus"
+        orderToTagName["e"] = "ending"
+        orderToTagName["i"] = "intro"
+        orderToTagName["b"] = "bridge"
+        orderToTagName["o"] = "outro"
+        orderToTagName["verse"] = "verse"
+        orderToTagName["chorus"] = "chorus"
+        orderToTagName["pre-chorus"] = "pre-chorus"
+        orderToTagName["ending"] = "ending"
+        orderToTagName["intro"] = "intro"
+        orderToTagName["bridge"] = "bridge"
+        orderToTagName["outro"] = "outro"
+
+        song_authors = song_authors.replace("&amp;", "|")
+
+        lyrics = lp.ParseLyric(song['lyrics'])
+        lyrics.reverse()
+        tags = []
+        slides = []
+        for l in lyrics:
+            tags.append(orderToTagName[str(l['type']).lower()] + " " + str(l['label']))
+            text = ""
+            for i in range(len(l['text'])):
+                text += str(codecs.decode(l['text'][i], 'utf-8'))
+            slides.append(text)
+
+        LifeVerse.writeFile(OUTPUT_DIRECTORY + song['title'].replace(' ', '-').replace('/', '-'), song['title'], song_authors, tags, slides)
+        #print(tags)
+        #print(slides)
+
 
     print ("Finished.")
 
